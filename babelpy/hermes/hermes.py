@@ -142,11 +142,14 @@ class HermesSession:
             self.in_buf[self.count] = c
             self.count += 1
 
-        elif self.synced == 1 and c == self.SYNC_2:
-            #print "SYNC_2 received"
-            self.synced = 2
-            self.in_buf[self.count] = c
-            self.count += 1
+        elif self.synced == 1:     #Check for SYNC_2 byte
+            if c == self.SYNC_2:   #SYNC_2 found
+                #print "SYNC_2 received"
+                self.synced = 2
+                self.in_buf[self.count] = c
+                self.count += 1
+            else:                  #Bad SYNC_2, reset
+                self.reset()
             
 
     def makePacket(self, checkType, msg, msgLen):
